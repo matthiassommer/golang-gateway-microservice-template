@@ -3,7 +3,7 @@ package middleware
 import (
 	"golang-gateway-microservice-template/utils"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // RemoveAuthorizedUser middleware removes the custom header "Authorized-User" to

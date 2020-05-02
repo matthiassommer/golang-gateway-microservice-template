@@ -7,8 +7,8 @@ import (
 
 	gw_middleware "golang-gateway-microservice-template/middleware"
 
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type (
@@ -63,6 +63,7 @@ func NewRouter() *Router {
 	echo.Use(middleware.BodyLimit("10MB"))
 	echo.Use(middleware.GzipWithConfig(middleware.GzipConfig{Level: 4}))
 	echo.Use(middleware.CORS())
+	echo.Use(middleware.Secure())
 
 	echo.HTTPErrorHandler = HTTPErrorHandler
 	echo.Logger.SetLevel(0)

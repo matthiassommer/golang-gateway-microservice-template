@@ -3,7 +3,7 @@ package utils
 import (
 	"encoding/json"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // HeaderAuthorizedUser is the header parameter used to exchange the user object between microservices.
