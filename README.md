@@ -51,6 +51,9 @@ docker run --rm -it gateway-service
 
 API_VERSION: the version parameter in the endpoint urls
 
+Launch.json contains a debug launch configuration. Environment parameters can be specified in a local.env file.
+
+
 ## Linting
 
 Install the linter runner [GolangCI-Lint](https://github.com/golangci/golangci-lint). The config file is already part of this repository.
