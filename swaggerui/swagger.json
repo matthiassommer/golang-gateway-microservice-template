@@ -1,0 +1,249 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "The API serves as entrypoint to the microservice infrastructure via its gateway service.\n\n\nSchemes: [https]",
+    "title": "Microservice API",
+    "contact": {
+      "name": "Matthias Sommer",
+      "email": "matthiassommer@posteo.de"
+    },
+    "version": "0.1.0"
+  },
+  "basePath": "/v1",
+  "paths": {
+    "/pizza": {
+      "get": {
+        "tags": [
+          "pizza"
+        ],
+        "summary": "Get a list of all pizzas.",
+        "operationId": "GetPizzas",
+        "responses": {
+          "200": {
+            "description": "Complete pizza menu received"
+          },
+          "500": {
+            "$ref": "#/responses/InternalServer"
+          }
+        }
+      }
+    },
+    "/pizza/:id": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "pizza"
+        ],
+        "summary": "Get a pizza by id.",
+        "operationId": "GetPizzaByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Pizza identifier",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pizza information received"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/InternalServer"
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "pizza"
+        ],
+        "summary": "Update a pizza by id.",
+        "operationId": "UpdatePizzaByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Pizza identifier",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pizza information updated"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/InternalServer"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "pizza"
+        ],
+        "summary": "Delete a pizza by id.",
+        "operationId": "DeletePizzaByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Pizza identifier",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pizza removed from menu"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/responses/InternalServer"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorBody": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "x-go-name": "Message"
+        },
+        "messageId": {
+          "type": "string",
+          "x-go-name": "MessageID"
+        },
+        "type": {
+          "type": "string",
+          "x-go-name": "Type"
+        }
+      },
+      "x-go-package": "golang-gateway-microservice-template/swagger"
+    }
+  },
+  "responses": {
+    "AuthResponse": {
+      "description": "Returns the login url in body. Use this URL to generate an access token."
+    },
+    "BadRequest": {
+      "description": "Bad Request error is returned when the request was malformed.",
+      "schema": {
+        "$ref": "#/definitions/ErrorBody"
+      }
+    },
+    "Forbidden": {
+      "description": "Forbidden error is returned when the user is not authorized to access a resource.",
+      "schema": {
+        "$ref": "#/definitions/ErrorBody"
+      }
+    },
+    "InternalServer": {
+      "description": "Internal server error is returned when the server encountered an unexpected condition that prevented it from fulfilling the request.",
+      "schema": {
+        "$ref": "#/definitions/ErrorBody"
+      }
+    },
+    "NotFound": {
+      "description": "Resource not found error is returned when the resource was not found.",
+      "schema": {
+        "$ref": "#/definitions/ErrorBody"
+      }
+    },
+    "TokenResponse": {
+      "description": "Token pair generated using the passed refresh token.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "x-go-name": "AccessToken"
+          },
+          "expiry": {
+            "type": "string",
+            "x-go-name": "Expiry"
+          },
+          "refresh_token": {
+            "type": "string",
+            "x-go-name": "RefreshToken"
+          },
+          "token_type": {
+            "type": "string",
+            "x-go-name": "TokenType"
+          }
+        }
+      }
+    },
+    "Unauthorized": {
+      "description": "Unauthorized error is returned when the user has sent invalid credentials.",
+      "schema": {
+        "$ref": "#/definitions/ErrorBody"
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}
