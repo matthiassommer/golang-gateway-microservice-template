@@ -1,0 +1,6 @@
+.idea
+*.exe
+debug
+__debug_bin
+golang-gateway-microservice-template
+local.env
