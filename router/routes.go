@@ -42,12 +42,12 @@ func (router *Router) registerPizzaRoutes() {
 	// parameters:
 	// - name: name
 	//   in: path
-	//   description: Pizza identifier
+	//   description: Pizza name
 	//   required: true
 	//   type: string
 	// responses:
 	//     200:
-	//         description: Pizza information received
+	//         '$ref': '#/responses/PizzaResponse'
 	//     400:
 	//         '$ref': '#/responses/BadRequest'
 	//     401:
@@ -60,6 +60,27 @@ func (router *Router) registerPizzaRoutes() {
 	//         '$ref': '#/responses/InternalServer'
 	pizza.GET("/:name", middleware.Proxy(config.PizzaServiceURL))
 
+	// swagger:operation POST /pizza pizza AddPizza
+	// Add a new pizza to the menu.
+	// ---
+	// security:
+	// - Bearer: []
+	// parameters:
+	// - in: body
+	//   name: pizza
+	//   required: true
+	//   type: string
+	// responses:
+	//     201:
+	//         '$ref': '#/responses/PizzaResponse'
+	//     400:
+	//         '$ref': '#/responses/BadRequest'
+	//     401:
+	//         '$ref': '#/responses/Unauthorized'
+	//     403:
+	//         '$ref': '#/responses/Forbidden'
+	//     500:
+	//         '$ref': '#/responses/InternalServer'
 	pizza.POST("", middleware.Proxy(config.PizzaServiceURL))
 
 	// swagger:operation PUT /pizza/:name pizza UpdatePizzaByName
@@ -70,12 +91,18 @@ func (router *Router) registerPizzaRoutes() {
 	// parameters:
 	// - name: name
 	//   in: path
-	//   description: Pizza identifier
+	//   description: Pizza name
 	//   required: true
 	//   type: string
+	// - in: body
+	//   name: pizza
+	//   required: true
+	//   type: string
+	//   schema:
+	//       '$ref': '#/definitions/PizzaResponse'
 	// responses:
 	//     200:
-	//         description: Pizza information updated
+	//         '$ref': '#/responses/PizzaResponse'
 	//     400:
 	//         '$ref': '#/responses/BadRequest'
 	//     401:
@@ -86,7 +113,7 @@ func (router *Router) registerPizzaRoutes() {
 	//         '$ref': '#/responses/NotFound'
 	//     500:
 	//         '$ref': '#/responses/InternalServer'
-	pizza.PUT("/:name", middleware.Proxy(config.PizzaServiceURL))
+	pizza.PATCH("/:name", middleware.Proxy(config.PizzaServiceURL))
 
 	// swagger:operation DELETE /pizza/:name pizza DeletePizzaByName
 	// Delete a pizza by name.
@@ -96,7 +123,7 @@ func (router *Router) registerPizzaRoutes() {
 	// parameters:
 	// - name: name
 	//   in: path
-	//   description: Pizza identifier
+	//   description: Pizza name
 	//   required: true
 	//   type: string
 	// responses:

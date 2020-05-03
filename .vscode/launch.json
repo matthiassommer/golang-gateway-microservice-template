@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch",
+            "name": "Gateway",
             "type": "go",
             "request": "launch",
             "port": 8080,

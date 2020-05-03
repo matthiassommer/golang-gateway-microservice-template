@@ -8,7 +8,7 @@
   "swagger": "2.0",
   "info": {
     "description": "The API serves as entrypoint to the microservice infrastructure via its gateway service.\n\n\nSchemes: [https]",
-    "title": "Microservice API",
+    "title": "Microservice API Gateway",
     "contact": {
       "name": "Matthias Sommer",
       "email": "matthiassommer@posteo.de"
@@ -32,9 +32,46 @@
             "$ref": "#/responses/InternalServer"
           }
         }
+      },
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": [
+          "pizza"
+        ],
+        "summary": "Add a new pizza to the menu.",
+        "operationId": "AddPizza",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "pizza",
+            "in": "body",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/PizzaResponse"
+          },
+          "400": {
+            "$ref": "#/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/responses/InternalServer"
+          }
+        }
       }
     },
-    "/pizza/:id": {
+    "/pizza/:name": {
       "get": {
         "security": [
           {
@@ -44,20 +81,20 @@
         "tags": [
           "pizza"
         ],
-        "summary": "Get a pizza by id.",
-        "operationId": "GetPizzaByID",
+        "summary": "Get a pizza by Name.",
+        "operationId": "GetPizzaByName",
         "parameters": [
           {
             "type": "string",
-            "description": "Pizza identifier",
-            "name": "id",
+            "description": "Pizza name",
+            "name": "name",
             "in": "path",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Pizza information received"
+            "$ref": "#/responses/PizzaResponse"
           },
           "400": {
             "$ref": "#/responses/BadRequest"
@@ -85,20 +122,29 @@
         "tags": [
           "pizza"
         ],
-        "summary": "Update a pizza by id.",
-        "operationId": "UpdatePizzaByID",
+        "summary": "Update a pizza by name.",
+        "operationId": "UpdatePizzaByName",
         "parameters": [
           {
             "type": "string",
-            "description": "Pizza identifier",
-            "name": "id",
+            "description": "Pizza name",
+            "name": "name",
             "in": "path",
             "required": true
+          },
+          {
+            "type": "string",
+            "name": "pizza",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PizzaResponse"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Pizza information updated"
+            "$ref": "#/responses/PizzaResponse"
           },
           "400": {
             "$ref": "#/responses/BadRequest"
@@ -126,13 +172,13 @@
         "tags": [
           "pizza"
         ],
-        "summary": "Delete a pizza by id.",
-        "operationId": "DeletePizzaByID",
+        "summary": "Delete a pizza by name.",
+        "operationId": "DeletePizzaByName",
         "parameters": [
           {
             "type": "string",
-            "description": "Pizza identifier",
-            "name": "id",
+            "description": "Pizza name",
+            "name": "name",
             "in": "path",
             "required": true
           }
@@ -178,6 +224,38 @@
         }
       },
       "x-go-package": "golang-gateway-microservice-template/swagger"
+    },
+    "ingredient": {
+      "type": "object",
+      "title": "The ingredient and its count.",
+      "properties": {
+        "Count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "Name": {
+          "type": "string"
+        }
+      },
+      "x-go-package": "golang-gateway-microservice-template/swagger"
+    },
+    "pizza": {
+      "type": "object",
+      "title": "The pizza has a name and contains ingredients.",
+      "properties": {
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ingredient"
+          },
+          "x-go-name": "Ingredients"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "golang-gateway-microservice-template/swagger"
     }
   },
   "responses": {
@@ -206,6 +284,17 @@
       "description": "Resource not found error is returned when the resource was not found.",
       "schema": {
         "$ref": "#/definitions/ErrorBody"
+      }
+    },
+    "PizzaResponse": {
+      "description": "The pizza object as returned by the pizza microservice.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "Pizza": {
+            "$ref": "#/definitions/pizza"
+          }
+        }
       }
     },
     "TokenResponse": {
