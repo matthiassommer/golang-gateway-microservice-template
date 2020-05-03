@@ -12,7 +12,7 @@ const (
 )
 
 func main() {
-	Log.Info("Start gateway service")
+	Log.Info("[Gateway] Start")
 
 	router := router.NewRouter()
 
@@ -20,7 +20,8 @@ func main() {
 	if Environment() == ENV_LOCAL {
 		port = ":" + strconv.Itoa(localPort)
 	}
+
 	Log.Fatal(router.Start(port))
 
-	Log.Info("Gateway service started")
+	Log.Info("[Gateway] Started")
 }

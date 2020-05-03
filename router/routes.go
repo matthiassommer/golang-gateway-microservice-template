@@ -34,13 +34,13 @@ func (router *Router) registerPizzaRoutes() {
 	//         '$ref': '#/responses/InternalServer'
 	pizza.GET("", middleware.Proxy(config.PizzaServiceURL))
 
-	// swagger:operation GET /pizza/:id pizza GetPizzaByID
-	// Get a pizza by id.
+	// swagger:operation GET /pizza/:name pizza GetPizzaByName
+	// Get a pizza by Name.
 	// ---
 	// security:
 	// - Bearer: []
 	// parameters:
-	// - name: id
+	// - name: name
 	//   in: path
 	//   description: Pizza identifier
 	//   required: true
@@ -58,17 +58,17 @@ func (router *Router) registerPizzaRoutes() {
 	//         '$ref': '#/responses/NotFound'
 	//     500:
 	//         '$ref': '#/responses/InternalServer'
-	pizza.GET("/:id", middleware.Proxy(config.PizzaServiceURL))
+	pizza.GET("/:name", middleware.Proxy(config.PizzaServiceURL))
 
 	pizza.POST("", middleware.Proxy(config.PizzaServiceURL))
 
-	// swagger:operation PUT /pizza/:id pizza UpdatePizzaByID
-	// Update a pizza by id.
+	// swagger:operation PUT /pizza/:name pizza UpdatePizzaByName
+	// Update a pizza by name.
 	// ---
 	// security:
 	// - Bearer: []
 	// parameters:
-	// - name: id
+	// - name: name
 	//   in: path
 	//   description: Pizza identifier
 	//   required: true
@@ -86,15 +86,15 @@ func (router *Router) registerPizzaRoutes() {
 	//         '$ref': '#/responses/NotFound'
 	//     500:
 	//         '$ref': '#/responses/InternalServer'
-	pizza.PUT("/:id", middleware.Proxy(config.PizzaServiceURL))
+	pizza.PUT("/:name", middleware.Proxy(config.PizzaServiceURL))
 
-	// swagger:operation DELETE /pizza/:id pizza DeletePizzaByID
-	// Delete a pizza by id.
+	// swagger:operation DELETE /pizza/:name pizza DeletePizzaByName
+	// Delete a pizza by name.
 	// ---
 	// security:
 	// - Bearer: []
 	// parameters:
-	// - name: id
+	// - name: name
 	//   in: path
 	//   description: Pizza identifier
 	//   required: true
@@ -112,5 +112,5 @@ func (router *Router) registerPizzaRoutes() {
 	//         '$ref': '#/responses/NotFound'
 	//     500:
 	//         '$ref': '#/responses/InternalServer'
-	pizza.DELETE("/:id", middleware.Proxy(config.PizzaServiceURL))
+	pizza.DELETE("/:name", middleware.Proxy(config.PizzaServiceURL))
 }
