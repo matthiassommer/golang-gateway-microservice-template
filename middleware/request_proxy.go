@@ -4,48 +4,51 @@ import (
 	auth "golang-gateway-microservice-template/authentication"
 	"golang-gateway-microservice-template/utils"
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
 
 var client = &http.Client{}
 
-// Proxy middleware takes the HTTP request and forwards it to the given service endpoint.
+// Proxy middleware takes the HTTP request and forwards it to the given microservice endpoint.
 // Returns the response from the microservices.
 func Proxy(serviceURL string) echo.HandlerFunc {
-	return func(c echo.Context) error {
+	return func(ctx echo.Context) error {
 		req, err := http.NewRequest(
-			c.Request().Method,
-			serviceURL+c.Request().RequestURI,
-			c.Request().Body,
+			ctx.Request().Method,
+			serviceURL+ctx.Request().RequestURI,
+			ctx.Request().Body,
 		)
 		if err != nil {
 			return err
 		}
 
-		req.Header = c.Request().Header
+		// extend the given request header
+		req.Header = ctx.Request().Header
 
-		if c.Response().Writer != nil {
-			requestID := c.Response().Header().Get(echo.HeaderXRequestID)
+		// add request ID
+		if ctx.Response().Writer != nil {
+			requestID := ctx.Response().Header().Get(echo.HeaderXRequestID)
 			req.Header.Set(echo.HeaderXRequestID, requestID)
 		}
 
-		// add the user to the request header
-		user := c.Request().Header.Get(auth.HeaderAuthenticatedUser)
+		// add user
+		user := ctx.Request().Header.Get(auth.HeaderAuthenticatedUser)
 		if user != "" {
 			req.Header.Set(auth.HeaderAuthenticatedUser, user)
 		}
 
 		resp, err := client.Do(req)
 		if err != nil {
-			c.Logger().Errorf("service %s (path %s) could not be reached: %s", serviceURL, c.Request().RequestURI, err.Error())
-			return utils.Error("a microservice is unavailable", utils.ErrorTypeBadGateway)
+			ctx.Logger().Errorf("service %s (path %s) could not be reached: %s", serviceURL, ctx.Request().RequestURI, err.Error())
+			return utils.Errorf(utils.ErrorTypeBadGateway, "microservice at %s is unavailable", serviceURL)
 		}
 		defer utils.Close(resp.Body)
 
-		// forward all headers to response
+		// forward header to response
 		for key, value := range resp.Header {
-			c.Response().Header().Set(key, value[0])
+			ctx.Response().Header().Set(key, strings.Join(value, ","))
 		}
 
 		contentType := resp.Header.Get(echo.HeaderContentType)
@@ -53,6 +56,6 @@ func Proxy(serviceURL string) echo.HandlerFunc {
 			contentType = echo.MIMEApplicationJSON
 		}
 
-		return c.Stream(resp.StatusCode, contentType, resp.Body)
+		return ctx.Stream(resp.StatusCode, contentType, resp.Body)
 	}
 }

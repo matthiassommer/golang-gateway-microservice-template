@@ -19,6 +19,7 @@ func Authenticate(next echo.HandlerFunc) echo.MiddlewareFunc {
 			if err != nil {
 				utils.Error("cannot marshal user object", utils.ErrorTypeInternalServer)
 			}
+
 			ctx.Request().Header.Set(auth.HeaderAuthenticatedUser, string(user))
 
 			return next(ctx)

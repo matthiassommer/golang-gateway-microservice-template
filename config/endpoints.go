@@ -18,21 +18,21 @@ var (
 	PizzaServiceURL string
 )
 
+func init() {
+	loadServiceEndpoints()
+}
+
+func loadServiceEndpoints() {
+	PizzaServiceURL = getURL(localPizzaServiceURL, "pizza")
+
+	utils.Log.Infof(`Using the following endpoints: pizza-service: %s`, PizzaServiceURL)
+}
+
+// getURL loads the microservice endpoint from a environment variable or returns the default for local testing.
 func getURL(defaultURL string, service string) string {
 	envName := fmt.Sprintf("%s_SERVICE_URL", strings.ToUpper(service))
 	if value, exists := os.LookupEnv(envName); exists {
 		return value
 	}
 	return defaultURL
-}
-
-func loadServiceEndpoints() {
-	PizzaServiceURL = getURL(localPizzaServiceURL, "data")
-
-	utils.Log.Infof(`Using the following endpoints: pizza-service: %s`, PizzaServiceURL)
-}
-
-// init determines service endpoint URLs by environment variable. If not set, uses default values.
-func init() {
-	loadServiceEndpoints()
 }
