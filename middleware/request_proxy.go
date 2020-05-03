@@ -1,7 +1,8 @@
 package middleware
 
 import (
-	. "golang-gateway-microservice-template/utils"
+	auth "golang-gateway-microservice-template/authentication"
+	"golang-gateway-microservice-template/utils"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -30,17 +31,17 @@ func Proxy(serviceURL string) echo.HandlerFunc {
 		}
 
 		// add the user to the request header
-		user := c.Request().Header.Get(HeaderAuthorizedUser)
+		user := c.Request().Header.Get(auth.HeaderAuthenticatedUser)
 		if user != "" {
-			req.Header.Set(HeaderAuthorizedUser, user)
+			req.Header.Set(auth.HeaderAuthenticatedUser, user)
 		}
 
 		resp, err := client.Do(req)
 		if err != nil {
 			c.Logger().Errorf("service %s (path %s) could not be reached: %s", serviceURL, c.Request().RequestURI, err.Error())
-			return Error("a microservice is unavailable", ErrorTypeBadGateway)
+			return utils.Error("a microservice is unavailable", utils.ErrorTypeBadGateway)
 		}
-		defer Close(resp.Body)
+		defer utils.Close(resp.Body)
 
 		// forward all headers to response
 		for key, value := range resp.Header {

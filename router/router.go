@@ -56,7 +56,7 @@ func NewRouter() *Router {
 	echo.Pre(middleware.RemoveTrailingSlash())
 	echo.Pre(gw_middleware.RemoveAuthorizedUser)
 
-	echo.Use(ContextMiddleware())
+	echo.Use(gw_middleware.ContextMiddleware())
 	echo.Use(gw_middleware.CustomLogger())
 	echo.Use(middleware.Recover())
 	echo.Use(middleware.RequestID())

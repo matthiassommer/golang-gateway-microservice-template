@@ -1,4 +1,4 @@
-// Microservice API
+// Microservice API Gateway
 //
 // The API serves as entrypoint to the microservice infrastructure via its gateway service.
 //
