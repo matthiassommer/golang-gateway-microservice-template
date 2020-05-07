@@ -2,6 +2,7 @@
 
 package router
 
+import context "context"
 import echo "github.com/labstack/echo/v4"
 import mock "github.com/stretchr/testify/mock"
 
@@ -74,6 +75,20 @@ func (_m *MockEcho) POST(_a0 string, _a1 echo.HandlerFunc, _a2 ...echo.Middlewar
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*echo.Route)
 		}
+	}
+
+	return r0
+}
+
+// Shutdown provides a mock function with given fields: ctx
+func (_m *MockEcho) Shutdown(ctx context.Context) error {
+	ret := _m.Called(ctx)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = rf(ctx)
+	} else {
+		r0 = ret.Error(0)
 	}
 
 	return r0

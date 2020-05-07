@@ -1,7 +1,9 @@
 package router
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	. "golang-gateway-microservice-template/utils"
 
@@ -26,11 +28,15 @@ type (
 
 	// Echo interface for mocking in tests
 	Echo interface {
+		// Start sets echo to listen on a particular address.
 		Start(address string) error
 		Group(prefix string, m ...echo.MiddlewareFunc) (g *echo.Group)
 		GET(string, echo.HandlerFunc, ...echo.MiddlewareFunc) *echo.Route
 		POST(string, echo.HandlerFunc, ...echo.MiddlewareFunc) *echo.Route
+		// Static is used to serve Swagger UI
 		Static(prefix, root string) *echo.Route
+		// Shutdown is waiting some seconds to stop the server gracefully and to release resources.
+		Shutdown(ctx context.Context) error
 	}
 )
 
@@ -84,7 +90,6 @@ func redirectHTTP() {
 	}()
 }
 
-// Start sets echo to listen on a particular address.
 func (router *Router) Start(address string) error {
 	return router.echo.Start(address)
 }
@@ -97,4 +102,13 @@ func (router *Router) Index(c echo.Context) error {
 // Health returns OK to indicate a running service.
 func (router *Router) Health(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
+}
+
+func (router *Router) Shutdown() {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := router.echo.Shutdown(ctx); err != nil {
+		Log.Fatal(err)
+	}
 }

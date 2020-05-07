@@ -3,7 +3,10 @@ package main
 import (
 	"golang-gateway-microservice-template/router"
 	. "golang-gateway-microservice-template/utils"
+	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 )
 
 const (
@@ -21,7 +24,13 @@ func main() {
 		port = ":" + strconv.Itoa(localPort)
 	}
 
-	Log.Fatal(router.Start(port))
+	go func() {
+		Log.Fatal(router.Start(port))
+	}()
 
-	Log.Info("[Gateway] Started")
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGABRT)
+	<-done
+
+	router.Shutdown()
 }
