@@ -2,6 +2,8 @@
 
 Exemplary Golang implementation of a Gateway Microservice.
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/matthiassommer/golang-gateway-microservice-template)](https://goreportcard.com/report/github.com/matthiassommer/golang-gateway-microservice-template)
+
 ## Overview
 
 The microservice gateway proxies incoming HTTP requests to subsequent microservices. It is the single entry point for the backend.
